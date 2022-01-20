@@ -1,9 +1,9 @@
-import { useState } from "react";
-import dataAdalaber from "../components/data.json";
+import { useState, useEffect } from "react";
 import "../styles/App.scss";
+import callToApi from "../services/api";
 
 function App() {
-  const [adalabers, setAdalabers] = useState(dataAdalaber.results);
+  const [adalabers, setAdalabers] = useState([]);
   const [nameAdalaber, setNameAdalaber] = useState("");
   const [counselor, setCounselor] = useState("");
   const [speciality, setSpeciality] = useState("");
@@ -11,6 +11,16 @@ function App() {
   const [filterCounselor, setFilterCounselor] = useState("all");
 
 
+  //-->Api:
+  useEffect(() => {
+    // Dentro de useEffect llamamos al API
+    callToApi().then((response) => {
+      // Cuando el API responde guardamos los datos en el estado para que se re-renderice el componente
+      setAdalabers(response);
+    });
+  }, []);
+
+  
   //con esta función pinto
   const renderAdalaber = () => {
     return adalabers
@@ -19,17 +29,13 @@ function App() {
           .toLowerCase()
           .includes(filterAdalaber.toLowerCase());
       })
-      .filter((oneAdalaber)=> {
-      if (filterCounselor === 'yanelis') {
-        return oneAdalaber.counselor.toLowerCase() === filterCounselor
-      } else if (filterCounselor === 'dayana') {
-        return oneAdalaber.counselor.toLowerCase() === filterCounselor
-      } if (filterCounselor === 'iván') {
-        return oneAdalaber.counselor.toLowerCase() === filterCounselor
-      }else {
-        return true;
-      }
-    })
+      .filter((oneAdalaber) => {
+        if (filterCounselor === "all") {
+          return true;
+         } else {
+          return oneAdalaber.counselor.toLowerCase() === filterCounselor;
+         }
+      })
       .map((oneAdalaber, index) => {
         return (
           <tr key={index}>
@@ -38,10 +44,12 @@ function App() {
             <td>{oneAdalaber.speciality}</td>
           </tr>
         );
+        
       });
+      
   };
 
-  //con estas funciones (evento) filtro 
+  //con estas funciones (evento) filtro
   const onChangeFilterListener = (ev) => {
     setFilterAdalaber(ev.target.value);
   };
@@ -50,7 +58,7 @@ function App() {
     setFilterCounselor(ev.target.value);
   };
 
-  //con estas funciones (evento) añado 
+  //con estas funciones (evento) añado
   const hanleNameAdalaber = (ev) => {
     setNameAdalaber(ev.target.value);
   };
@@ -71,6 +79,9 @@ function App() {
       speciality: speciality,
     };
     setAdalabers([...adalabers, newAdalaber]);
+    setNameAdalaber('');
+    setCounselor('');
+    setSpeciality('');
   };
 
   return (
@@ -119,19 +130,25 @@ function App() {
               type="text"
               name="name"
               id="name"
+              placeholder="Nueva Adalaber"
               onChange={hanleNameAdalaber}
+              value={nameAdalaber}
             />
             <input
               type="text"
               name="counselor"
               id="counselor"
+              placeholder="Tutora"
               onChange={hanleConselor}
+              value={counselor}
             />
             <input
               type="text"
               name="speciality"
               id="speciality"
+              placeholder="Especialidad"
               onChange={hanleSpeciality}
+              value={speciality}
             />
             <input type="submit" value="Añadir" />
           </form>
