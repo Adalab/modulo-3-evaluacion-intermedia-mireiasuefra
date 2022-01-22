@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import "../styles/App.scss";
 import callToApi from "../services/api";
+import Header from "./Header";
 
 function App() {
   const [adalabers, setAdalabers] = useState([]);
@@ -86,30 +87,12 @@ function App() {
 
   return (
     <div>
-      <header>
-        <h1>Adalabers</h1>
-        <form>
-          <select
-            name="name"
-            id="name"
-            value={filterCounselor}
-            onChange={onChangeFilterSelecterListener}
-          >
-            <option value="all">Todas</option>
-            <option value="yanelis">Yanelis</option>
-            <option value="dayana">Dayana</option>
-            <option value="iván">Iván</option>
-          </select>
-
-          <input
-            type="Text"
-            name="name"
-            placeholder="Ej: Nombre Adalaber"
-            value={filterAdalaber}
-            onChange={onChangeFilterListener}
-          />
-        </form>
-      </header>
+      <Header
+        filterCounselor={filterCounselor}
+        filterAdalaber={filterAdalaber}
+        onChangeFilterSelecterListener={onChangeFilterSelecterListener}
+        onChangeFilterListener={onChangeFilterListener}
+      />
       <main>
         <div>
           <table>
